@@ -1,0 +1,57 @@
+name: "Deploy Sentinel Terraform - Prod"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write   # Required for Azure OIDC Passwordless Auth
+  contents: read    # Required for GitHub to checkout the repo
+
+jobs:
+  terraform-prod:
+    name: "Terraform Execution (Production)"
+    runs-on: ubuntu-latest
+    
+    # MAGIC PLUMBING: Forces the runner into the specific environment folder
+    defaults:
+      run:
+        working-directory: ./environments/prod
+
+    env:
+      # 1. Azure Authentication
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_USE_OIDC: true
+      
+      # 2. Terraform Variables
+      TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      
+      # IMPORTANT: Replace YOUR_RG_NAME and YOUR_WORKSPACE_NAME with your actual Azure strings!
+      TF_VAR_log_analytics_workspace_id: "/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/Prod_Environment/providers/Microsoft.OperationalInsights/workspaces/secops-analytic-workspace-prod"
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0"
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -no-color
+
+      - name: Terraform Apply
+        # Only apply automatically if the code was merged into the main branch
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve
