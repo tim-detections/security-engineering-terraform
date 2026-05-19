@@ -1,20 +1,38 @@
-# Terraform
-**/.terraform/*
+# ==========================================
+# Terraform - Never Commit Local State/Cache
+# ==========================================
+
+**/.terraform/
+**/.terraform.lock.hcl
+
 *.tfstate
 *.tfstate.*
-*.tfplan
-.terraform.lock.hcl
+*.tfstate.backup
 
-# Sensitive tfvars
+# Terraform variable files (may contain secrets)
 *.tfvars
-!terraform.tfvars.example
+!*.tfvars.example
 
-# OS
+# Crash logs
+crash.log
+crash.*.log
+
+# Sensitive files
+*.pem
+*.key
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Windows artifacts
 Thumbs.db
-.DS_Store
+Desktop.ini
 
 # VSCode
 .vscode/
 
-# Logs
-*.log
+# OS generated files
+.DS_Store
