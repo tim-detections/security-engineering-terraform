@@ -1,5 +1,5 @@
 module "password_spray_rule" {
-  source                     = "../../modules/sentinel-analytics-rule"
+  source                     = "../../../modules/sentinel-analytics-rule"
   
   # A unique ID for Azure (can be any unique string or UUID)
   name                       = "UC0006-AAD-PasswordSpray-Rule" 
