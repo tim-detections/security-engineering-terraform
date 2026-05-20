@@ -12,6 +12,7 @@ module "mfa_fatigue_rule" {
   # Rule Definition
   name                       = "d7a819b2-3e4f-4a6c-9d8b-1e2f3a4b5c6d"
   display_name               = "Entra ID MFA Fatigue with Successful Authentication"
+  description                = "Detects MFA fatigue (push bombing) attacks by correlating multiple declined prompts followed by a successful login, alongside device, location, and Entra ID risk anomalies."
   severity                   = "High"
   tactics                    = ["CredentialAccess", "InitialAccess"]
   techniques                 = ["T1110", "T1621"]
