@@ -7,6 +7,9 @@ module "password_spray_rule" {
   display_name               = "AAD PasswordSpray With One Successful Correlation"
   description                = "Detects password spray behavior in Azure AD by identifying multiple failed authentication attempts across several users from a single IP within a 30-minute window. Correlates whether the spray resulted in successful login."
   
+  # Turn the rule off
+  enabled                    = false
+  
   # Calling the KQL file we just created
   query                      = file("${path.module}/../../../queries/sentinel/identity/password_spray.kql")
   
