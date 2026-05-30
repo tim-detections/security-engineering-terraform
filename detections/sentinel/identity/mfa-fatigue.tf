@@ -16,6 +16,9 @@ module "mfa_fatigue_rule" {
   severity                   = "High"
   tactics                    = ["CredentialAccess", "InitialAccess"]
   techniques                 = ["T1110", "T1621"]
+
+  # Disabled by default to prevent noise, can be enabled after tuning
+  enabled                    = false
   
   # Magically pulls your KQL from your queries folder!
   query                      = file("${path.module}/../../../queries/sentinel/identity/mfa_fatigue.kql")
